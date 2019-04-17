@@ -1,9 +1,12 @@
 <resources>
-    <string name="app_name">DuMix AR</string>
-    <string name="app_title">DuMix AR Demo</string>
+    <string name="app_name">爱尔工业AR测试</string>
+    <string name="app_title">ARDemo</string>
     <string-array name="ar_name">
         <!--<item>加载本地AR内容</item>-->
-        <item>单目SLAM（Monocular SLAM）</item>
+        <item>小熊</item>
+        <item>沙发</item>
+        <item>椅子</item>
+        <item>椅子02</item>
         <!--<item>本地识别（On-Device IR）</item>-->
         <!--<item>云端识别（Cloud IR）</item>-->
         <!--<item>图片跟踪（2D Tracking）</item>-->

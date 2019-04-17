@@ -17,11 +17,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
-
 import com.aier.ardemo.utils.AssetsCopyToSdcard;
 import com.baidu.ar.util.ARLog;
-
-
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,11 +59,11 @@ public class MainActivity extends Activity {
 
     private void initView() {
         mListData = getListItemData();
-        mListView = (ListView) findViewById(R.id.demo_list);
+        mListView =  findViewById(R.id.list);
         mListView.addFooterView(new ViewStub(this));
         mAdapter = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, mArName);
         mListView.setAdapter(mAdapter);
-        intent = new Intent(MainActivity.this, IntroActivity.class);
+        intent = new Intent(MainActivity.this, ARActivity.class);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -90,12 +87,10 @@ public class MainActivity extends Activity {
 
     private List<ListItemBean> getListItemData() {
         List<ListItemBean> list = new ArrayList<>();
-
-        // 加载本地AR内容
-     //   list.add(new ListItemBean(5, "", DEFAULT_PATH));
-        // SLAM AR 小熊
-        list.add(new ListItemBean(5, "10301508", ""));
-
+        list.add(new ListItemBean(5, "10301534", ""));// SLAM AR 小熊
+        list.add(new ListItemBean(5, "10301540", ""));//沙发
+        list.add(new ListItemBean(5, "10301541", ""));//椅子
+        list.add(new ListItemBean(5, "10301542", ""));//椅子02
 
         if (mArName != null && mArDesciption != null) {
             for (int i = 0; i < mArName.length && i < mArDesciption.length; i++) {
