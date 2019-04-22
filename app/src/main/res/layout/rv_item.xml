@@ -5,6 +5,7 @@
     android:layout_margin="8dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <com.aier.ardemo.weight.RoundImageView
+        android:id="@+id/rv_bg"
         android:layout_width="match_parent"
         android:layout_height="160dp"
         app:layout_constraintLeft_toLeftOf="parent"

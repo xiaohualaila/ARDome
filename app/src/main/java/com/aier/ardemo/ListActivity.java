@@ -15,9 +15,12 @@ import com.baidu.ar.util.ARLog;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListActivity extends Activity implements MyAdapter.OnRecyclerViewListener{
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
-    private RecyclerView recyclerView;
+public class ListActivity extends Activity implements MyAdapter.OnRecyclerViewListener{
+    @BindView(R.id.rv_list)
+    RecyclerView recyclerView;
     private MyAdapter mAdapter;
     private List<ListItemBean> mListData;
     private Intent intent;
@@ -26,6 +29,7 @@ public class ListActivity extends Activity implements MyAdapter.OnRecyclerViewLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
+        ButterKnife.bind(this);
         ARLog.setDebugEnable(true);
         initData();
         initView();
@@ -37,9 +41,7 @@ public class ListActivity extends Activity implements MyAdapter.OnRecyclerViewLi
     }
 
     private void initView() {
-        recyclerView =  findViewById(R.id.rv_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
         //设置Adapter
         recyclerView.setAdapter(mAdapter);
         //设置分隔线
@@ -51,11 +53,12 @@ public class ListActivity extends Activity implements MyAdapter.OnRecyclerViewLi
 
     private List<ListItemBean> getListItemData() {
         List<ListItemBean> list = new ArrayList<>();
-        list.add(new ListItemBean("小熊",5, "10301534", ""));
-        list.add(new ListItemBean("沙发",5, "10301540", ""));
-        list.add(new ListItemBean("椅子",5, "10301541", ""));
-        list.add(new ListItemBean("椅子02",5, "10301542", ""));
-        list.add(new ListItemBean("小猫",5, "10301556", ""));
+        list.add(new ListItemBean("白色椅子",5, "10301636", "",R.mipmap.bear_icon));
+        list.add(new ListItemBean("小熊",5, "10301534", "",R.mipmap.bear_icon));
+        list.add(new ListItemBean("小熊2",5, "10301609", "",R.mipmap.bear_icon));
+        list.add(new ListItemBean("沙发",5, "10301540", "",R.mipmap.yizi));
+        list.add(new ListItemBean("椅子",5, "10301541", "",R.mipmap.yizi));
+        list.add(new ListItemBean("小猫",5, "10301556", "",R.mipmap.yizi));
         return list;
     }
 

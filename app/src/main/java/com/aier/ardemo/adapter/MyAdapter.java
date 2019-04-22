@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import com.aier.ardemo.R;
 import com.aier.ardemo.bean.ListItemBean;
+import com.aier.ardemo.weight.RoundImageView;
+
 import java.util.List;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyHolder> {
@@ -33,6 +35,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyHolder> {
     @Override
     public void onBindViewHolder(@NonNull final MyHolder myHolder, final int i) {
         myHolder.tv.setText(list.get(i).getName());
+        myHolder.roundImageView.setImageResource(list.get(i).getImage());
         myHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -50,9 +53,11 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyHolder> {
 
     class MyHolder extends RecyclerView.ViewHolder{
         TextView tv;
+        RoundImageView roundImageView;
         public MyHolder(@NonNull View itemView) {
             super(itemView);
             tv =  itemView.findViewById(R.id.tv);
+            roundImageView = itemView.findViewById(R.id.rv_bg);
         }
     }
     private OnRecyclerViewListener onRecyclerViewListener;

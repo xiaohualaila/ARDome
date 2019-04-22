@@ -2,6 +2,7 @@ package com.aier.ardemo;
 
 import android.Manifest;
 import android.app.Activity;
+import android.arch.lifecycle.ViewModel;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -17,13 +18,18 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import com.aier.ardemo.model.QrCode;
 import com.aier.ardemo.utils.AssetsCopyToSdcard;
+import com.aier.ardemo.view.BaseActivity;
+import com.aier.ardemo.viewmodel.LoginViewModel;
+import com.aier.ardemo.viewmodel.base.LViewModelProviders;
 import com.baidu.ar.util.ARLog;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends Activity {
+public class MainActivity extends BaseActivity {
     private String[] mArName;
     private String[] mArDesciption;
     private ListView mListView;
@@ -41,7 +47,7 @@ public class MainActivity extends Activity {
     private static final int REQUEST_CODE_ASK_ALL_PERMISSIONS = 154;
     private boolean mIsDenyAllPermission = false;
     private Intent intent;
-
+    private LoginViewModel qrCodeViewModel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +56,22 @@ public class MainActivity extends Activity {
         initData();
         initView();
     }
+
+    @Override
+    protected ViewModel initViewModel() {
+        qrCodeViewModel = LViewModelProviders.of(this, LoginViewModel.class);
+        qrCodeViewModel.getQrCodeLiveData().observe(this, this::handleQrCode);
+        return null;
+    }
+
+    private void handleQrCode(QrCode qrCode) {
+      //  iv_qrCode.setImageBitmap(qrCode.getBitmap());
+    }
+
+//    public void createQrCode(View view) {
+//        iv_qrCode.setImageBitmap(null);
+//        qrCodeViewModel.createQrCode(et_text.getText().toString(), 600);
+//    }
 
     private void initData() {
         Resources res = getResources();
