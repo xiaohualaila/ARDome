@@ -1,10 +1,8 @@
 package com.aier.ardemo.viewmodel;
 
 import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.Observer;
-import android.support.annotation.Nullable;
-import com.aier.ardemo.http.datasource.QrCodeDataSource;
-import com.aier.ardemo.http.repo.QrCodeRepo;
+import com.aier.ardemo.http.datasource.LoginDataSource;
+import com.aier.ardemo.http.repo.LoginRepo;
 import com.aier.ardemo.model.QrCode;
 import com.aier.ardemo.viewmodel.base.BaseViewModel;
 
@@ -19,21 +17,21 @@ import com.aier.ardemo.viewmodel.base.BaseViewModel;
  */
 public class LoginViewModel extends BaseViewModel {
 
-    private MutableLiveData<QrCode> qrCodeLiveData;
+    private MutableLiveData<QrCode> loginLiveData;
 
-    private QrCodeRepo qrCodeRepo;
+    private LoginRepo loginRepo;
 
     public LoginViewModel() {
-        qrCodeLiveData = new MutableLiveData<>();
-        qrCodeRepo = new QrCodeRepo(new QrCodeDataSource(this));
+        loginLiveData = new MutableLiveData<>();
+        loginRepo = new LoginRepo(new LoginDataSource(this));
     }
 
     public void createQrCode(String text, int width) {
-        qrCodeRepo.createQrCode(text, width).observe(lifecycleOwner, qrCode -> qrCodeLiveData.setValue(qrCode));
+        loginRepo.createQrCode(text, width).observe(lifecycleOwner, qrCode -> loginLiveData.setValue(qrCode));
     }
 
-    public MutableLiveData<QrCode> getQrCodeLiveData() {
-        return qrCodeLiveData;
+    public MutableLiveData<QrCode> getloginLiveData() {
+        return loginLiveData;
     }
 
 }

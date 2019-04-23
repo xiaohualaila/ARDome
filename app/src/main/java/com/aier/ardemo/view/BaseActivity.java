@@ -9,13 +9,16 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.aier.ardemo.R;
 import com.aier.ardemo.event.BaseActionEvent;
 import com.aier.ardemo.viewmodel.base.IViewModelAction;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.ButterKnife;
 
 
 /**
@@ -27,14 +30,24 @@ import java.util.List;
  */
 @SuppressLint("Registered")
 public abstract class BaseActivity extends AppCompatActivity {
-
+    private Toast mToast;
     private ProgressDialog loadingDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(getLayout());
+        ButterKnife.bind(this);
         initViewModelEvent();
+        initDate(savedInstanceState);
+        initViews();
     }
+
+    protected abstract void initViews();
+
+    protected abstract void initDate(Bundle savedInstanceState);
+
+    protected abstract int getLayout();
 
     protected abstract ViewModel initViewModel();
 
@@ -141,6 +154,43 @@ public abstract class BaseActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     protected boolean isFinishingOrDestroyed() {
         return isFinishing() || isDestroyed();
+    }
+
+    /**
+     * 发出一个短Toast
+     *
+     * @param text 内容
+     */
+    public void toastShort(String text) {
+        toast(text, Toast.LENGTH_SHORT);
+    }
+
+    /**
+     * 发出一个长toast提醒
+     *
+     * @param text 内容
+     */
+    public void toastLong(String text) {
+        toast(text, Toast.LENGTH_LONG);
+    }
+
+
+    private void toast(final String text, final int duration) {
+        if (!TextUtils.isEmpty(text)) {
+            runOnUiThread(new Runnable() {
+
+                @Override
+                public void run() {
+                    if (mToast == null) {
+                        mToast = Toast.makeText(getApplicationContext(), text, duration);
+                    } else {
+                        mToast.setText(text);
+                        mToast.setDuration(duration);
+                    }
+                    mToast.show();
+                }
+            });
+        }
     }
 
 }

@@ -1,253 +1,110 @@
 package com.aier.ardemo;
 
-import android.Manifest;
-import android.app.Activity;
 import android.arch.lifecycle.ViewModel;
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.res.Resources;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.text.TextUtils;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.View;
-import android.view.ViewStub;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.Toast;
-
-import com.aier.ardemo.model.QrCode;
-import com.aier.ardemo.utils.AssetsCopyToSdcard;
+import android.widget.RelativeLayout;
+import com.aier.ardemo.fragment.HomeFragment;
+import com.aier.ardemo.fragment.MyFragment;
 import com.aier.ardemo.view.BaseActivity;
-import com.aier.ardemo.viewmodel.LoginViewModel;
-import com.aier.ardemo.viewmodel.base.LViewModelProviders;
-import com.baidu.ar.util.ARLog;
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.List;
+import com.aier.ardemo.weight.BottomView;
+import butterknife.BindView;
+import butterknife.OnClick;
 
-public class MainActivity extends BaseActivity {
-    private String[] mArName;
-    private String[] mArDesciption;
-    private ListView mListView;
-    private ArrayAdapter mAdapter;
-    private List<ListItemBean> mListData;
 
-    public static final String ASSETS_CASE_FOLDER = "ardebug";
-    public static final String DEFAULT_PATH =
-            Environment.getExternalStorageDirectory().toString() + "/" + ASSETS_CASE_FOLDER;
-
-    // 权限请求相关
-    private static final String[] ALL_PERMISSIONS = new String[]{
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-    };
-    private static final int REQUEST_CODE_ASK_ALL_PERMISSIONS = 154;
-    private boolean mIsDenyAllPermission = false;
-    private Intent intent;
-    private LoginViewModel qrCodeViewModel;
+public class MainActivity extends BaseActivity  implements BottomView.BottomCallBack{
+    @BindView(R.id.bottom_view)
+    BottomView bottomView;
+    @BindView(R.id.rl_submit)
+    RelativeLayout rl_submit;
+    private Fragment mCurrentFrag;
+    private FragmentManager fm;
+    private Fragment homeFragment;
+    private Fragment myFragment;
+    private boolean flag = true;
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        ARLog.setDebugEnable(true);
-        initData();
-        initView();
+    protected void initViews() {
+        fm = getSupportFragmentManager();
+        homeFragment = new HomeFragment();
+        myFragment = new MyFragment();
+        switchContent(homeFragment);
+        bottomView.setBottomCallBack(this);
+    }
+
+    @Override
+    protected void initDate(Bundle savedInstanceState) {
+
+    }
+
+    @Override
+    protected int getLayout() {
+        return R.layout.activity_main;
     }
 
     @Override
     protected ViewModel initViewModel() {
-        qrCodeViewModel = LViewModelProviders.of(this, LoginViewModel.class);
-        qrCodeViewModel.getQrCodeLiveData().observe(this, this::handleQrCode);
+
         return null;
     }
 
-    private void handleQrCode(QrCode qrCode) {
-      //  iv_qrCode.setImageBitmap(qrCode.getBitmap());
-    }
 
-//    public void createQrCode(View view) {
-//        iv_qrCode.setImageBitmap(null);
-//        qrCodeViewModel.createQrCode(et_text.getText().toString(), 600);
-//    }
+    @OnClick({R.id.fab})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.fab:
 
-    private void initData() {
-        Resources res = getResources();
-        mArName = res.getStringArray(R.array.ar_name);
-        mArDesciption = res.getStringArray(R.array.ar_description);
-    }
-
-    private void initView() {
-        mListData = getListItemData();
-        mListView =  findViewById(R.id.list);
-        mListView.addFooterView(new ViewStub(this));
-        mAdapter = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, mArName);
-        mListView.setAdapter(mAdapter);
-        intent = new Intent(MainActivity.this, ARActivity.class);
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Bundle bundle = new Bundle();
-                ListItemBean listItemBean = mListData.get(position);
-                bundle.putString("ar_key", listItemBean.getARKey());
-                bundle.putInt("ar_type", listItemBean.getARType());
-                bundle.putString("ar_path", listItemBean.getARPath());
-                bundle.putString("name", listItemBean.getName());
-                bundle.putString("description", listItemBean.getDescription());
-                intent.putExtras(bundle);
-                // 拷贝文件到SD卡
-                if (!TextUtils.isEmpty(listItemBean.getARPath())) {
-                    requestAllPermissions(REQUEST_CODE_ASK_ALL_PERMISSIONS);
-                } else {
-                    startActivity(intent);
+                if(flag){
+                    flag = false;
+                    rl_submit.setVisibility(View.VISIBLE);
+                }else {
+                    flag = true;
+                    rl_submit.setVisibility(View.GONE);
                 }
-            }
-        });
+
+                break;
+        }
+
     }
 
-    private List<ListItemBean> getListItemData() {
-        List<ListItemBean> list = new ArrayList<>();
-        list.add(new ListItemBean(5, "10301534", ""));// SLAM AR 小熊
-        list.add(new ListItemBean(5, "10301540", ""));//沙发
-        list.add(new ListItemBean(5, "10301541", ""));//椅子
-        list.add(new ListItemBean(5, "10301542", ""));//椅子02
+    @Override
+    public void setCallBack(int num) {
+        switch (num){
+            case 1:
+                switchContent(homeFragment);
+                break;
+            case 2:
+                switchContent(myFragment);
+                break;
+            case 3:
 
-        if (mArName != null && mArDesciption != null) {
-            for (int i = 0; i < mArName.length && i < mArDesciption.length; i++) {
-                list.get(i).setName(mArName[i]);
-                list.get(i).setDescription(mArDesciption[i]);
-            }
-        }
-        return list;
-    }
+                break;
+            case 4:
 
-    private class ListItemBean {
-        String mARKey;
-        int mARType;
-        String mName;
-        String mDescription;
-        String mARPath;
-
-        ListItemBean(int arType, String arKey, String arPath) {
-            this.mARType = arType;
-            this.mARKey = arKey;
-            this.mARPath = arPath;
-        }
-
-        public String getARKey() {
-            return mARKey;
-        }
-
-        public int getARType() {
-            return mARType;
-        }
-
-        public String getARPath() {
-            return mARPath;
-        }
-
-        public String getName() {
-            return mName;
-        }
-
-        public void setName(String name) {
-            mName = name;
-        }
-
-        public String getDescription() {
-            return mDescription;
-        }
-
-        public void setDescription(String description) {
-            mDescription = description;
-        }
-    }
-
-    public static class CopyFileTask extends AsyncTask {
-        private final Intent intent;
-        private final WeakReference<Context> contextRef;
-
-        public CopyFileTask(Intent intent, Context context) {
-            this.intent = intent;
-            this.contextRef = new WeakReference<>(context);
-        }
-
-        @Override
-        protected Object doInBackground(Object[] objects) {
-            Context context = contextRef.get();
-            if (context != null) {
-                AssetsCopyToSdcard assetsCopyTOSDcard = new AssetsCopyToSdcard(context);
-                assetsCopyTOSDcard.assetToSD(ASSETS_CASE_FOLDER, DEFAULT_PATH);
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Object o) {
-            if (contextRef.get() != null) {
-                Toast.makeText(contextRef.get(), "拷贝完成", Toast.LENGTH_SHORT).show();
-                contextRef.get().startActivity(intent);
-            }
+                break;
         }
     }
 
     /**
-     * 请求权限
+     * 动态添加fragment，不会重复创建fragment
      *
-     * @param requestCode
+     * @param to 将要加载的fragment
      */
-    private void requestAllPermissions(int requestCode) {
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                List<String> permissionsList = getRequestPermissions(this);
-                if (permissionsList.size() == 0) {
-                    Toast.makeText(this, "正在拷贝资源", Toast.LENGTH_SHORT).show();
-                    new CopyFileTask(intent, this).execute();
-                    return;
+    public void switchContent(Fragment to) {
+        if (mCurrentFrag != to) {
+            if (!to.isAdded()) {// 如果to fragment没有被add则增加一个fragment
+                if (mCurrentFrag != null) {
+                    fm.beginTransaction().hide(mCurrentFrag).commit();
                 }
-                if (!mIsDenyAllPermission) {
-                    requestPermissions(permissionsList.toArray(new String[permissionsList.size()]),
-                            requestCode);
-                }
+                fm.beginTransaction()
+                        .add(R.id.fl_content, to)
+                        .commit();
             } else {
-                Toast.makeText(this, "正在拷贝资源", Toast.LENGTH_SHORT).show();
-                new CopyFileTask(intent, this).execute();
+                fm.beginTransaction().hide(mCurrentFrag).show(to).commit(); // 隐藏当前的fragment，显示下一个
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+            mCurrentFrag = to;
         }
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if (requestCode == REQUEST_CODE_ASK_ALL_PERMISSIONS) {
-            mIsDenyAllPermission = false;
-            for (int i = 0; i < permissions.length; i++) {
-                if (i >= grantResults.length || grantResults[i] == PackageManager.PERMISSION_DENIED) {
-                    mIsDenyAllPermission = true;
-                    break;
-                }
-            }
-            Toast.makeText(this, "正在拷贝资源", Toast.LENGTH_SHORT).show();
-            new CopyFileTask(intent, this).execute();
-            if (mIsDenyAllPermission) {
-                finish();
-            }
-        }
-
-    }
-
-    private static List<String> getRequestPermissions(Activity activity) {
-        List<String> permissionsList = new ArrayList();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            for (String permission : ALL_PERMISSIONS) {
-                if (activity.checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
-                    permissionsList.add(permission);
-                }
-            }
-        }
-        return permissionsList;
-    }
 }

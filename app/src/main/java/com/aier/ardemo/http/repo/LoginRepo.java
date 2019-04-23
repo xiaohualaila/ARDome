@@ -9,7 +9,7 @@ import android.util.Base64;
 
 import com.aier.ardemo.http.basis.BaseRepo;
 import com.aier.ardemo.http.basis.callback.RequestCallback;
-import com.aier.ardemo.http.datasource.base.IQrCodeDataSource;
+import com.aier.ardemo.http.datasource.base.ILoginDataSource;
 import com.aier.ardemo.model.QrCode;
 
 import io.reactivex.Observable;
@@ -27,9 +27,9 @@ import io.reactivex.schedulers.Schedulers;
  * GitHub：https://github.com/leavesC
  * Blog：https://www.jianshu.com/u/9df45b87cfdf
  */
-public class QrCodeRepo extends BaseRepo<IQrCodeDataSource> {
+public class LoginRepo extends BaseRepo<ILoginDataSource> {
 
-    public QrCodeRepo(IQrCodeDataSource remoteDataSource) {
+    public LoginRepo(ILoginDataSource remoteDataSource) {
         super(remoteDataSource);
     }
 

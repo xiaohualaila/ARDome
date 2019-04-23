@@ -4,7 +4,7 @@ package com.aier.ardemo.http.datasource;
 import com.aier.ardemo.http.basis.BaseRemoteDataSource;
 import com.aier.ardemo.http.basis.callback.RequestCallback;
 import com.aier.ardemo.http.basis.config.HttpConfig;
-import com.aier.ardemo.http.datasource.base.IQrCodeDataSource;
+import com.aier.ardemo.http.datasource.base.ILoginDataSource;
 import com.aier.ardemo.http.service.ApiService;
 import com.aier.ardemo.model.QrCode;
 import com.aier.ardemo.viewmodel.base.BaseViewModel;
@@ -16,9 +16,9 @@ import com.aier.ardemo.viewmodel.base.BaseViewModel;
  * GitHub：https://github.com/leavesC
  * Blog：https://www.jianshu.com/u/9df45b87cfdf
  */
-public class QrCodeDataSource extends BaseRemoteDataSource implements IQrCodeDataSource {
+public class LoginDataSource extends BaseRemoteDataSource implements ILoginDataSource {
 
-    public QrCodeDataSource(BaseViewModel baseViewModel) {
+    public LoginDataSource(BaseViewModel baseViewModel) {
         super(baseViewModel);
     }
 

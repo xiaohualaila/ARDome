@@ -11,7 +11,7 @@ import com.aier.ardemo.model.QrCode;
  * GitHub：https://github.com/leavesC
  * Blog：https://www.jianshu.com/u/9df45b87cfdf
  */
-public interface IQrCodeDataSource {
+public interface ILoginDataSource {
 
     void createQrCode(String text, int width, RequestCallback<QrCode> callback);
 
